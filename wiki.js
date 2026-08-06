@@ -41,3 +41,10 @@ function initFilterableTable(id) {
 
   inputs.forEach((i) => i.addEventListener("input", filter));
 }
+
+
+// --- Lighthouse integration: notify parent of current page ---
+if (window.parent !== window) {
+  const path = window.location.pathname.replace(/^.*\/wiki\//, "");
+  window.parent.postMessage({ type: "wiki-navigate", path }, "*");
+}
