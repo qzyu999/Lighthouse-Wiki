@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metrics - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="../catalog/index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="index.html" class="nav-item active">Metrics</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="metrics-index">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Data<span class="sep">/</span>Metrics
+      </div>
+      <div class="page-header">
+        <h1>Metrics</h1>
+        <p class="subtitle">KPI definitions, formulas, and source tables.</p>
+      </div>
+
+      <div class="section">
+        <h2>Overview</h2>
+        <p>Metrics are named calculations with a defined formula, grain, and source table. They provide a single source of truth for KPIs across the TPC-H supply chain dataset. Each metric below is the canonical definition — dashboards, reports, and LLM-generated queries should reference these formulas to ensure consistency.</p>
+      </div>
+
+      <div class="section">
+        <h2>Metric Registry</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Formula</th>
+              <th>Source</th>
+              <th>Granularity</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>revenue</strong></td>
+              <td><code>SUM(l_extendedprice * (1 - l_discount))</code></td>
+              <td><a href="../catalog/index.html">lineitem</a></td>
+              <td>Per line item (aggregatable to order, customer, date)</td>
+            </tr>
+            <tr>
+              <td><strong>discounted_revenue</strong></td>
+              <td><code>SUM(l_extendedprice * (1 - l_discount) * (1 + l_tax))</code></td>
+              <td><a href="../catalog/index.html">lineitem</a></td>
+              <td>Per line item (includes tax impact)</td>
+            </tr>
+            <tr>
+              <td><strong>avg_order_value</strong></td>
+              <td><code>AVG(o_totalprice)</code></td>
+              <td><a href="../catalog/index.html">orders</a></td>
+              <td>Per order (often grouped by segment or date)</td>
+            </tr>
+            <tr>
+              <td><strong>fill_rate</strong></td>
+              <td><code>COUNT(*) FILTER (WHERE o_orderstatus = 'F') / COUNT(*)</code></td>
+              <td><a href="../catalog/index.html">orders</a></td>
+              <td>Per order (ratio, 0.0–1.0)</td>
+            </tr>
+            <tr>
+              <td><strong>avg_discount</strong></td>
+              <td><code>AVG(l_discount)</code></td>
+              <td><a href="../catalog/index.html">lineitem</a></td>
+              <td>Per line item (often grouped by supplier or part)</td>
+            </tr>
+            <tr>
+              <td><strong>supplier_concentration</strong></td>
+              <td><code>COUNT(DISTINCT l_suppkey)</code></td>
+              <td><a href="../catalog/index.html">lineitem</a></td>
+              <td>Per part (measures supply diversity)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Usage Notes</h2>
+        <p><strong>Revenue vs. Discounted Revenue:</strong> The <code>revenue</code> metric represents the net amount collected (price after discount). The <code>discounted_revenue</code> metric adds tax back in, representing the total charged amount including tax. Most financial reports use <code>revenue</code>; tax-inclusive analyses use <code>discounted_revenue</code>.</p>
+        <p><strong>Fill Rate Interpretation:</strong> A fill rate of 0.72 means 72% of orders have been fully shipped. This is an operational health metric — declining fill rate signals fulfillment bottlenecks.</p>
+        <p><strong>Supplier Concentration:</strong> Low values (1–2 suppliers per part) indicate supply chain risk. This metric is typically filtered to specific part types or regions when used in risk dashboards.</p>
+      </div>
+
+      <div class="section">
+        <h2>Example Queries</h2>
+        <pre><code>-- Revenue by market segment (TPC-H Q3 simplified)
+SELECT c.c_mktsegment,
+       SUM(l.l_extendedprice * (1 - l.l_discount)) AS revenue
+FROM   lineitem l
+JOIN   orders o ON l.l_orderkey = o.o_orderkey
+JOIN   customer c ON o.o_custkey = c.c_custkey
+WHERE  o.o_orderdate < DATE '1995-03-15'
+GROUP BY c.c_mktsegment
+ORDER BY revenue DESC;
+
+-- Fill rate trend by month
+SELECT DATE_TRUNC('month', o_orderdate) AS month,
+       COUNT(*) FILTER (WHERE o_orderstatus = 'F')::FLOAT / COUNT(*) AS fill_rate
+FROM   orders
+GROUP BY 1
+ORDER BY 1;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

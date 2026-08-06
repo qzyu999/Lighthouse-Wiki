@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>orders — Data Catalog</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item">nation</a>
+      <a href="customer.html" class="nav-item">customer</a>
+      <a href="supplier.html" class="nav-item">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item">partsupp</a>
+      <a href="orders.html" class="nav-item active">orders</a>
+      <a href="lineitem.html" class="nav-item">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="entity" data-type="entity" data-name="orders" data-section="core" data-editable="true">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Catalog</a><span class="sep">/</span>orders
+      </div>
+
+      <div class="page-header">
+        <h1>orders</h1>
+        <p class="subtitle">Purchase orders placed by customers in the supply chain.</p>
+      </div>
+
+      <div class="meta-row" data-section="meta" data-editable="true">
+        <span class="meta-badge"><span class="label">Layer:</span> Core</span>
+        <span class="meta-badge"><span class="label">Type:</span> Entity</span>
+        <span class="meta-badge"><span class="label">Rows:</span> 15,000</span>
+        <span class="meta-badge"><span class="label">Related:</span> customer, lineitem</span>
+      </div>
+
+      <div class="section" data-section="schema" data-editable="true">
+        <h2>Schema</h2>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>o_orderkey</code></td><td>INTEGER</td><td>Primary key — unique order identifier</td></tr>
+            <tr><td><code>o_custkey</code></td><td>INTEGER</td><td>FK → customer.c_custkey</td></tr>
+            <tr><td><code>o_orderstatus</code></td><td>VARCHAR</td><td>Order status: O (open), F (fulfilled), P (partial)</td></tr>
+            <tr><td><code>o_totalprice</code></td><td>DECIMAL</td><td>Total order value</td></tr>
+            <tr><td><code>o_orderdate</code></td><td>DATE</td><td>Date the order was placed</td></tr>
+            <tr><td><code>o_orderpriority</code></td><td>VARCHAR</td><td>Priority level (1-URGENT, 2-HIGH, 3-MEDIUM, 4-NOT SPECIFIED, 5-LOW)</td></tr>
+            <tr><td><code>o_clerk</code></td><td>VARCHAR</td><td>Clerk who processed the order</td></tr>
+            <tr><td><code>o_shippriority</code></td><td>INTEGER</td><td>Shipping priority flag</td></tr>
+            <tr><td><code>o_comment</code></td><td>VARCHAR</td><td>Optional remarks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="business-rules" data-editable="true">
+        <h2>Business rules</h2>
+        <ul>
+          <li><code>o_orderkey</code> is the primary key (unique, not null)</li>
+          <li><code>o_custkey</code> must reference a valid <code>customer.c_custkey</code></li>
+          <li><code>o_orderstatus</code> is derived: F if all lineitems shipped, O if none shipped, P if partially shipped</li>
+          <li><code>o_totalprice</code> equals the sum of lineitem extended prices for the order</li>
+          <li>Referenced by <code>lineitem.l_orderkey</code></li>
+          <li>Each order has 1–7 line items</li>
+        </ul>
+      </div>
+
+      <div class="section" data-section="queries" data-editable="true">
+        <h2>Example queries</h2>
+
+        <h3>Orders by status</h3>
+<pre><code>SELECT o_orderstatus, COUNT(*) AS order_count, 
+       SUM(o_totalprice) AS total_value
+FROM orders
+GROUP BY o_orderstatus;</code></pre>
+
+        <h3>Top customers by order value</h3>
+<pre><code>SELECT c.c_name, COUNT(o.o_orderkey) AS num_orders,
+       SUM(o.o_totalprice) AS total_spent
+FROM orders o
+JOIN customer c ON c.c_custkey = o.o_custkey
+GROUP BY c.c_name
+ORDER BY total_spent DESC
+LIMIT 10;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

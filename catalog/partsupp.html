@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>partsupp — Data Catalog</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item">nation</a>
+      <a href="customer.html" class="nav-item">customer</a>
+      <a href="supplier.html" class="nav-item">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item active">partsupp</a>
+      <a href="orders.html" class="nav-item">orders</a>
+      <a href="lineitem.html" class="nav-item">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="entity" data-type="relationship" data-name="partsupp" data-section="core" data-editable="true">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Catalog</a><span class="sep">/</span>partsupp
+      </div>
+
+      <div class="page-header">
+        <h1>partsupp</h1>
+        <p class="subtitle">Many-to-many relationship between parts and suppliers, with pricing and availability.</p>
+      </div>
+
+      <div class="meta-row" data-section="meta" data-editable="true">
+        <span class="meta-badge"><span class="label">Layer:</span> Core</span>
+        <span class="meta-badge"><span class="label">Type:</span> Relationship</span>
+        <span class="meta-badge"><span class="label">Rows:</span> 8,000</span>
+        <span class="meta-badge"><span class="label">Related:</span> part, supplier</span>
+      </div>
+
+      <div class="section" data-section="schema" data-editable="true">
+        <h2>Schema</h2>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>ps_partkey</code></td><td>INTEGER</td><td>FK → part.p_partkey (part of composite PK)</td></tr>
+            <tr><td><code>ps_suppkey</code></td><td>INTEGER</td><td>FK → supplier.s_suppkey (part of composite PK)</td></tr>
+            <tr><td><code>ps_availqty</code></td><td>INTEGER</td><td>Available quantity from this supplier</td></tr>
+            <tr><td><code>ps_supplycost</code></td><td>DECIMAL</td><td>Supply cost for this part-supplier combination</td></tr>
+            <tr><td><code>ps_comment</code></td><td>VARCHAR</td><td>Optional remarks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="business-rules" data-editable="true">
+        <h2>Business rules</h2>
+        <ul>
+          <li>Composite primary key: <code>(ps_partkey, ps_suppkey)</code></li>
+          <li><code>ps_partkey</code> must reference a valid <code>part.p_partkey</code></li>
+          <li><code>ps_suppkey</code> must reference a valid <code>supplier.s_suppkey</code></li>
+          <li><code>ps_availqty</code> ≥ 0</li>
+          <li><code>ps_supplycost</code> &gt; 0</li>
+          <li>Each part has ~4 suppliers (8,000 rows / 2,000 parts)</li>
+        </ul>
+      </div>
+
+      <div class="section" data-section="queries" data-editable="true">
+        <h2>Example queries</h2>
+
+        <h3>Cheapest supplier for each part</h3>
+<pre><code>SELECT ps.ps_partkey, p.p_name, s.s_name, ps.ps_supplycost
+FROM partsupp ps
+JOIN part p ON p.p_partkey = ps.ps_partkey
+JOIN supplier s ON s.s_suppkey = ps.ps_suppkey
+WHERE ps.ps_supplycost = (
+  SELECT MIN(ps2.ps_supplycost)
+  FROM partsupp ps2
+  WHERE ps2.ps_partkey = ps.ps_partkey
+)
+ORDER BY ps.ps_partkey
+LIMIT 10;</code></pre>
+
+        <h3>Total inventory value by supplier</h3>
+<pre><code>SELECT s.s_name,
+       SUM(ps.ps_availqty * ps.ps_supplycost) AS inventory_value
+FROM partsupp ps
+JOIN supplier s ON s.s_suppkey = ps.ps_suppkey
+GROUP BY s.s_name
+ORDER BY inventory_value DESC;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

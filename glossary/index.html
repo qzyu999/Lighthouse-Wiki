@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Glossary - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Glossary</div>
+      <a href="index.html" class="nav-item active">Glossary</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="glossary-index">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Glossary
+      </div>
+      <div class="page-header">
+        <h1>Glossary</h1>
+        <p class="subtitle">Business terms and their technical definitions.</p>
+      </div>
+
+      <div class="section">
+        <h2>About This Glossary</h2>
+        <p>This glossary provides a shared vocabulary for business and technical concepts used throughout the TPC-H supply chain dataset. Each term includes a plain-language definition and its relationship to the underlying schema. Use this as a reference when writing queries, building metrics, or onboarding new team members.</p>
+      </div>
+
+      <div class="section">
+        <h2>Business Terms</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Definition</th>
+              <th>Related Table</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Order</strong></td>
+              <td>A purchase request placed by a customer. Each order has a unique key, a date, a priority level, and a total price. An order may contain multiple line items.</td>
+              <td>orders</td>
+            </tr>
+            <tr>
+              <td><strong>Line Item</strong></td>
+              <td>A single product entry within an order, specifying quantity, price, discount, tax, ship date, and return status. The most granular fact in the model.</td>
+              <td>lineitem</td>
+            </tr>
+            <tr>
+              <td><strong>Customer Segment</strong></td>
+              <td>A classification of the customer's business type. One of: AUTOMOBILE, BUILDING, FURNITURE, HOUSEHOLD, or MACHINERY.</td>
+              <td>customer (c_mktsegment)</td>
+            </tr>
+            <tr>
+              <td><strong>Market Segment</strong></td>
+              <td>Synonym for customer segment in the TPC-H model. Used interchangeably in queries like Q3 (Shipping Priority).</td>
+              <td>customer (c_mktsegment)</td>
+            </tr>
+            <tr>
+              <td><strong>Order Priority</strong></td>
+              <td>Urgency classification of an order. Values: 1-URGENT, 2-HIGH, 3-MEDIUM, 4-NOT SPECIFIED, 5-LOW. Used in fulfillment scheduling.</td>
+              <td>orders (o_orderpriority)</td>
+            </tr>
+            <tr>
+              <td><strong>Ship Mode</strong></td>
+              <td>The transportation method for a line item. Values: REG AIR, AIR, RAIL, SHIP, TRUCK, MAIL, FOB. Affects delivery time and cost.</td>
+              <td>lineitem (l_shipmode)</td>
+            </tr>
+            <tr>
+              <td><strong>Return Flag</strong></td>
+              <td>Indicates whether a line item was returned (R), accepted (A), or is still in transit (N). Critical for revenue calculations.</td>
+              <td>lineitem (l_returnflag)</td>
+            </tr>
+            <tr>
+              <td><strong>Extended Price</strong></td>
+              <td>The gross price for a line item before discounts and taxes. Calculated as l_quantity × part price. Base for revenue metrics.</td>
+              <td>lineitem (l_extendedprice)</td>
+            </tr>
+            <tr>
+              <td><strong>Discount</strong></td>
+              <td>A fractional reduction applied to the extended price (0.00 to 0.10). A value of 0.05 means a 5% discount on that line item.</td>
+              <td>lineitem (l_discount)</td>
+            </tr>
+            <tr>
+              <td><strong>Tax</strong></td>
+              <td>A fractional tax rate applied after discount (0.00 to 0.08). Applied per line item, not per order.</td>
+              <td>lineitem (l_tax)</td>
+            </tr>
+            <tr>
+              <td><strong>Supply Cost</strong></td>
+              <td>The cost a supplier charges for a specific part. Used to calculate margins (extended price minus supply cost).</td>
+              <td>partsupp (ps_supplycost)</td>
+            </tr>
+            <tr>
+              <td><strong>Account Balance</strong></td>
+              <td>A monetary value representing a customer's or supplier's credit standing. Can be negative (debt) or positive (credit).</td>
+              <td>customer (c_acctbal), supplier (s_acctbal)</td>
+            </tr>
+            <tr>
+              <td><strong>Order Status</strong></td>
+              <td><strong>O</strong> = Open (at least one line item pending), <strong>F</strong> = Fulfilled (all items shipped), <strong>P</strong> = Partial (some items shipped, none pending cancellation).</td>
+              <td>orders (o_orderstatus)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Technical Terms</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Term</th>
+              <th>Definition</th>
+              <th>Related Table</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Fact Table</strong></td>
+              <td>A table storing measurable events at the finest grain. In TPC-H, <code>lineitem</code> is the central fact table with ~6M rows at SF=1. Contains foreign keys to all dimensions.</td>
+              <td>lineitem</td>
+            </tr>
+            <tr>
+              <td><strong>Dimension Table</strong></td>
+              <td>A table storing descriptive attributes used to filter or group facts. Examples: customer, supplier, part, nation, region.</td>
+              <td>customer, supplier, part, nation, region</td>
+            </tr>
+            <tr>
+              <td><strong>Composite Key</strong></td>
+              <td>A primary key composed of multiple columns. In TPC-H, lineitem uses (l_orderkey, l_linenumber) and partsupp uses (ps_partkey, ps_suppkey).</td>
+              <td>lineitem, partsupp</td>
+            </tr>
+            <tr>
+              <td><strong>Foreign Key</strong></td>
+              <td>A column referencing another table's primary key. Example: lineitem.l_orderkey → orders.o_orderkey. Enforces referential integrity.</td>
+              <td>All tables</td>
+            </tr>
+            <tr>
+              <td><strong>Cardinality</strong></td>
+              <td>The number of distinct values in a column. High cardinality (e.g., l_orderkey) means many unique values; low cardinality (e.g., o_orderstatus with 3 values) means few.</td>
+              <td>All tables</td>
+            </tr>
+            <tr>
+              <td><strong>Scale Factor (SF)</strong></td>
+              <td>The multiplier controlling TPC-H dataset size. SF=0.01 ≈ 60K line items, SF=1 ≈ 6M line items. Our dataset uses SF=0.01 for fast iteration.</td>
+              <td>All tables</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Quick Reference: Table Row Counts (SF=0.01)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Table</th>
+              <th>Approximate Rows</th>
+              <th>Primary Key</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>region</td><td>5</td><td>r_regionkey</td></tr>
+            <tr><td>nation</td><td>25</td><td>n_nationkey</td></tr>
+            <tr><td>supplier</td><td>100</td><td>s_suppkey</td></tr>
+            <tr><td>customer</td><td>1,500</td><td>c_custkey</td></tr>
+            <tr><td>part</td><td>2,000</td><td>p_partkey</td></tr>
+            <tr><td>partsupp</td><td>8,000</td><td>(ps_partkey, ps_suppkey)</td></tr>
+            <tr><td>orders</td><td>15,000</td><td>o_orderkey</td></tr>
+            <tr><td>lineitem</td><td>60,000</td><td>(l_orderkey, l_linenumber)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>supplier — Data Catalog</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item">nation</a>
+      <a href="customer.html" class="nav-item">customer</a>
+      <a href="supplier.html" class="nav-item active">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item">partsupp</a>
+      <a href="orders.html" class="nav-item">orders</a>
+      <a href="lineitem.html" class="nav-item">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="entity" data-type="entity" data-name="supplier" data-section="core" data-editable="true">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Catalog</a><span class="sep">/</span>supplier
+      </div>
+
+      <div class="page-header">
+        <h1>supplier</h1>
+        <p class="subtitle">Parts suppliers that provide items to the supply chain.</p>
+      </div>
+
+      <div class="meta-row" data-section="meta" data-editable="true">
+        <span class="meta-badge"><span class="label">Layer:</span> Core</span>
+        <span class="meta-badge"><span class="label">Type:</span> Entity</span>
+        <span class="meta-badge"><span class="label">Rows:</span> 100</span>
+        <span class="meta-badge"><span class="label">Related:</span> nation, partsupp, lineitem</span>
+      </div>
+
+      <div class="section" data-section="schema" data-editable="true">
+        <h2>Schema</h2>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>s_suppkey</code></td><td>INTEGER</td><td>Primary key — unique supplier identifier</td></tr>
+            <tr><td><code>s_name</code></td><td>VARCHAR</td><td>Supplier name</td></tr>
+            <tr><td><code>s_address</code></td><td>VARCHAR</td><td>Street address</td></tr>
+            <tr><td><code>s_nationkey</code></td><td>INTEGER</td><td>FK → nation.n_nationkey</td></tr>
+            <tr><td><code>s_phone</code></td><td>VARCHAR</td><td>Phone number</td></tr>
+            <tr><td><code>s_acctbal</code></td><td>DECIMAL</td><td>Account balance</td></tr>
+            <tr><td><code>s_comment</code></td><td>VARCHAR</td><td>Optional remarks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="business-rules" data-editable="true">
+        <h2>Business rules</h2>
+        <ul>
+          <li><code>s_suppkey</code> is the primary key (unique, not null)</li>
+          <li><code>s_nationkey</code> must reference a valid <code>nation.n_nationkey</code></li>
+          <li>Referenced by <code>partsupp.ps_suppkey</code> and <code>lineitem.l_suppkey</code></li>
+          <li>Each supplier can provide multiple parts via the partsupp relationship</li>
+        </ul>
+      </div>
+
+      <div class="section" data-section="queries" data-editable="true">
+        <h2>Example queries</h2>
+
+        <h3>Suppliers by nation</h3>
+<pre><code>SELECT n.n_name, COUNT(*) AS supplier_count
+FROM supplier s
+JOIN nation n ON n.n_nationkey = s.s_nationkey
+GROUP BY n.n_name
+ORDER BY supplier_count DESC;</code></pre>
+
+        <h3>Supplier part availability</h3>
+<pre><code>SELECT s.s_name, COUNT(ps.ps_partkey) AS parts_supplied,
+       AVG(ps.ps_supplycost) AS avg_cost
+FROM supplier s
+JOIN partsupp ps ON ps.ps_suppkey = s.s_suppkey
+GROUP BY s.s_name
+ORDER BY parts_supplied DESC
+LIMIT 10;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

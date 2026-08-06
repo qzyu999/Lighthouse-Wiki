@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Type System - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Semantics</div>
+      <a href="index.html" class="nav-item">Primitives</a>
+      <a href="types.html" class="nav-item active">Type System</a>
+      <a href="invariants.html" class="nav-item">Invariants</a>
+      <a href="graph.html" class="nav-item">Lineage Graph</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="semantics-types">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Semantics<span class="sep">/</span>Type System
+      </div>
+      <div class="page-header">
+        <h1>Type System</h1>
+        <p class="subtitle">Formal definitions for each data primitive type.</p>
+      </div>
+      <div class="section">
+        <h2>Primitive Types</h2>
+        <p>The platform supports STRING, INTEGER, FLOAT, BOOLEAN, TIMESTAMP, and DATE as first-class primitive types with well-defined semantics.</p>
+      </div>
+      <div class="section">
+        <h2>Complex Types</h2>
+        <p>ARRAY, MAP, and STRUCT types allow nesting and composition. Each has defined rules for nullability, equality, and ordering.</p>
+      </div>
+      <div class="section">
+        <h2>Type Coercion</h2>
+        <p>Implicit coercion rules define how values are promoted between compatible types. Explicit casts are required for lossy conversions.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

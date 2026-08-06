@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>daily-revenue pipeline — Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="../catalog/index.html" class="nav-item">Catalog</a>
+      <a href="index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="pipelines-daily-revenue">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Pipelines</a><span class="sep">/</span>daily-revenue
+      </div>
+      <div class="page-header">
+        <h1>daily-revenue</h1>
+        <p class="subtitle">Aggregates lineitem and orders data into daily revenue metrics.</p>
+      </div>
+      <div class="meta-row">
+        <span class="meta-badge"><span class="label">Schedule:</span> Daily 07:00 UTC</span>
+        <span class="meta-badge"><span class="label">Input:</span> lineitem + orders</span>
+        <span class="meta-badge"><span class="label">Output:</span> daily revenue aggregate</span>
+        <span class="meta-badge"><span class="label">Owner:</span> analytics</span>
+      </div>
+      <div class="section">
+        <h2>Description</h2>
+        <p>This pipeline reads from the <a href="../catalog/lineitem.html">lineitem</a> and <a href="../catalog/orders.html">orders</a> tables, joins them on <code>l_orderkey = o_orderkey</code>, and computes daily revenue aggregates using the TPC-H formula: <code>SUM(l_extendedprice * (1 - l_discount))</code> grouped by ship date.</p>
+      </div>
+      <div class="section">
+        <h2>Dependencies</h2>
+        <ul>
+          <li><a href="../catalog/lineitem.html">lineitem</a> — source fact table (60,000 rows)</li>
+          <li><a href="../catalog/orders.html">orders</a> — provides order context and customer linkage</li>
+        </ul>
+        <p>Both input tables must be loaded before this pipeline executes.</p>
+      </div>
+      <div class="section">
+        <h2>Logic</h2>
+<pre><code>SELECT l.l_shipdate AS revenue_date,
+       SUM(l.l_extendedprice * (1 - l.l_discount)) AS daily_revenue,
+       COUNT(DISTINCT l.l_orderkey) AS order_count
+FROM lineitem l
+JOIN orders o ON o.o_orderkey = l.l_orderkey
+GROUP BY l.l_shipdate;</code></pre>
+      </div>
+    </div>
+  </main>
+
+  <script src="../wiki.js"></script>
+</body>
+</html>

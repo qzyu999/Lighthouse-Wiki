@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Roadmap - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <a href="changelog.html" class="nav-item">Changelog</a>
+      <a href="roadmap.html" class="nav-item active">Roadmap</a>
+      <a href="issues.html" class="nav-item">Issues</a>
+      <a href="migrations.html" class="nav-item">Migrations</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="status-roadmap">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Operations<span class="sep">/</span>Roadmap
+      </div>
+      <div class="page-header">
+        <h1>Roadmap</h1>
+        <p class="subtitle">What's planned for the TPC-H data platform.</p>
+      </div>
+
+      <div class="section">
+        <h2>Completed</h2>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>✅ DuckDB Query Engine Integration</strong>
+            <p>Migrated all TPC-H tables from flat CSV to DuckDB's native columnar storage. Enabled in-process analytical queries with sub-second latency on SF=0.01. Supports full SQL including window functions, CTEs, and predicate pushdown.</p>
+            <p><em>Completed: 2024-07-01</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>In Progress</h2>
+
+        <div class="status-card">
+          <span class="dot yellow"></span>
+          <div class="status-card-content">
+            <strong>🔄 Wiki Context Injection into Lighthouse LLM</strong>
+            <p>Feeding wiki page content (table schemas, metric definitions, glossary terms) into the Lighthouse chatbot's system prompt so the LLM can generate accurate SQL against the TPC-H schema without hallucinating column names or relationships.</p>
+            <p><em>Target: 2024-08-15 · Owner: Data Platform Team</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Planned</h2>
+
+        <div class="status-card">
+          <span class="dot gray"></span>
+          <div class="status-card-content">
+            <strong>📋 Incremental Refresh (Append-Only Ingestion)</strong>
+            <p>Add support for appending new orders and line items without regenerating the full dataset. Enables simulating a live order stream by inserting synthetic rows on a schedule. Prerequisite for real-time dashboards.</p>
+            <p><em>Target: Q4 2024 · Depends on: DuckDB WAL support</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot gray"></span>
+          <div class="status-card-content">
+            <strong>📋 Materialized Views for Top-N Queries</strong>
+            <p>Pre-compute results for expensive queries like "top 10 suppliers by revenue" and "top 5 customers by order count." Reduces LLM response latency by serving cached results instead of running full aggregations on each request.</p>
+            <p><em>Target: Q4 2024 · Depends on: Incremental refresh</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot gray"></span>
+          <div class="status-card-content">
+            <strong>📋 Real-Time Order Stream (Bronze Layer)</strong>
+            <p>Introduce a streaming ingestion layer that generates synthetic TPC-H orders in real time. Orders flow into a Bronze (raw) table, get validated and deduplicated into Silver, then aggregated into Gold-layer materialized views. Mirrors a production medallion architecture.</p>
+            <p><em>Target: Q1 2025 · Depends on: Incremental refresh, materialized views</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot gray"></span>
+          <div class="status-card-content">
+            <strong>📋 Interactive ERD Visualization (Cytoscape.js)</strong>
+            <p>Replace the ASCII entity-relationship diagram on the Lineage Graph page with a draggable, zoomable Cytoscape.js visualization. Clicking a node will show column details, row counts, and sample data inline.</p>
+            <p><em>Target: Q1 2025 · Depends on: Wiki context injection</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Prioritization</h2>
+        <p>Items are ordered by dependency chain: incremental refresh unlocks materialized views, which unlocks real-time streaming. The wiki context injection is the current priority as it directly improves the Lighthouse LLM's query accuracy.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Item</th>
+              <th>Status</th>
+              <th>Blocking</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>P0</td>
+              <td>Wiki context injection</td>
+              <td><span class="dot yellow" style="display:inline-block"></span> In Progress</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <td>P1</td>
+              <td>Incremental refresh</td>
+              <td><span class="dot gray" style="display:inline-block"></span> Planned</td>
+              <td>DuckDB WAL support</td>
+            </tr>
+            <tr>
+              <td>P1</td>
+              <td>Materialized views</td>
+              <td><span class="dot gray" style="display:inline-block"></span> Planned</td>
+              <td>Incremental refresh</td>
+            </tr>
+            <tr>
+              <td>P2</td>
+              <td>Real-time order stream</td>
+              <td><span class="dot gray" style="display:inline-block"></span> Planned</td>
+              <td>Materialized views</td>
+            </tr>
+            <tr>
+              <td>P2</td>
+              <td>Cytoscape.js ERD</td>
+              <td><span class="dot gray" style="display:inline-block"></span> Planned</td>
+              <td>Wiki context injection</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

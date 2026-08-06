@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migrations - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <a href="changelog.html" class="nav-item">Changelog</a>
+      <a href="roadmap.html" class="nav-item">Roadmap</a>
+      <a href="issues.html" class="nav-item">Issues</a>
+      <a href="migrations.html" class="nav-item active">Migrations</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="status-migrations">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Operations<span class="sep">/</span>Migrations
+      </div>
+      <div class="page-header">
+        <h1>Migrations</h1>
+        <p class="subtitle">Schema changes, column renames, and deprecations.</p>
+      </div>
+
+      <div class="section">
+        <h2>Migration History</h2>
+        <p>All schema migrations for the TPC-H dataset are tracked below. Each migration has a version number, description, impact assessment, and current status. Migrations follow semantic versioning: major = breaking changes, minor = additive changes, patch = non-breaking fixes.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Version</th>
+              <th>Date</th>
+              <th>Change</th>
+              <th>Impact</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>v2.0</strong></td>
+              <td>2024-08-01 (planned)</td>
+              <td>Split customer address into structured fields: <code>c_address</code> → <code>c_street</code>, <code>c_city</code>, <code>c_postal_code</code>. Deprecate the original <code>c_address</code> column after 30-day dual-write period.</td>
+              <td><span class="dot yellow" style="display:inline-block"></span> <strong>Breaking</strong> — All queries referencing <code>c_address</code> must be updated. Affects customer-segmentation pipeline and geographic dashboards.</td>
+              <td>📋 Planned</td>
+            </tr>
+            <tr>
+              <td><strong>v1.2</strong></td>
+              <td>2024-06-25</td>
+              <td>Added composite primary key enforcement on <code>lineitem(l_orderkey, l_linenumber)</code> and <code>partsupp(ps_partkey, ps_suppkey)</code>. Rejects duplicate inserts at the storage layer.</td>
+              <td><span class="dot green" style="display:inline-block"></span> <strong>Non-breaking</strong> — Enforces existing uniqueness constraint. No query changes needed. Duplicate rows (if any) were deduplicated before enforcement.</td>
+              <td>✅ Complete</td>
+            </tr>
+            <tr>
+              <td><strong>v1.1</strong></td>
+              <td>2024-06-10</td>
+              <td>Changed <code>l_extendedprice</code> from <code>INTEGER</code> to <code>DECIMAL(15,2)</code>. Also applied to <code>o_totalprice</code>, <code>ps_supplycost</code>, and <code>c_acctbal</code>/<code>s_acctbal</code>.</td>
+              <td><span class="dot green" style="display:inline-block"></span> <strong>Non-breaking</strong> — Implicit casting handles existing queries. Revenue calculations now return exact decimal results instead of truncated integers. Precision improvement.</td>
+              <td>✅ Complete</td>
+            </tr>
+            <tr>
+              <td><strong>v1.0</strong></td>
+              <td>2024-05-15</td>
+              <td>Initial schema creation. All 8 TPC-H tables created with standard column definitions from the TPC-H specification v3.0. Generated at SF=0.01.</td>
+              <td><span class="dot green" style="display:inline-block"></span> <strong>Baseline</strong> — First version of the schema. No migration path (greenfield deployment).</td>
+              <td>✅ Complete</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Migration Process</h2>
+        <p>All breaking schema changes follow a deprecation window:</p>
+        <ol>
+          <li><strong>Announce</strong> — Document the planned change in this table with a "Planned" status and target date</li>
+          <li><strong>Dual-write</strong> — Write to both old and new columns/tables simultaneously (minimum 14 days)</li>
+          <li><strong>Migrate consumers</strong> — Update all pipelines, metrics, and queries to use the new schema</li>
+          <li><strong>Remove</strong> — Drop the deprecated column/table after confirming zero reads</li>
+        </ol>
+        <p>Non-breaking changes (additive columns, index creation, type widening) can be applied immediately without a deprecation window.</p>
+      </div>
+
+      <div class="section">
+        <h2>Rollback Procedures</h2>
+        <p>Each migration includes a rollback script stored alongside the forward migration. For DuckDB-based schemas:</p>
+        <ul>
+          <li><strong>Column type changes:</strong> <code>ALTER TABLE ... ALTER COLUMN ... SET DATA TYPE</code> (reversible if no precision loss)</li>
+          <li><strong>New columns:</strong> <code>ALTER TABLE ... DROP COLUMN</code></li>
+          <li><strong>Table splits:</strong> Restore from pre-migration snapshot (DuckDB <code>EXPORT DATABASE</code> taken before each major migration)</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

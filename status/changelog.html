@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changelog - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <a href="changelog.html" class="nav-item active">Changelog</a>
+      <a href="roadmap.html" class="nav-item">Roadmap</a>
+      <a href="issues.html" class="nav-item">Issues</a>
+      <a href="migrations.html" class="nav-item">Migrations</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="status-changelog">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Operations<span class="sep">/</span>Changelog
+      </div>
+      <div class="page-header">
+        <h1>Changelog</h1>
+        <p class="subtitle">Recent changes to the TPC-H data platform.</p>
+      </div>
+
+      <div class="section">
+        <h2>Latest Changes</h2>
+        <p>This page tracks recent modifications to schemas, pipelines, metrics, and infrastructure. Entries are listed in reverse chronological order.</p>
+      </div>
+
+      <div class="section">
+        <h2>2024</h2>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>2024-07-15</strong> — Added lineitem.l_shipmode index
+            <p>Created a non-unique index on <code>l_shipmode</code> to accelerate ship-mode-based filtering queries (TPC-H Q12, Q19). Query performance improved ~3x for mode-specific aggregations on the SF=0.01 dataset.</p>
+            <p><em>Scope: lineitem table, DuckDB storage layer</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>2024-07-01</strong> — Migrated from CSV to DuckDB native storage
+            <p>Replaced the flat CSV file ingest with DuckDB's native columnar format. All 8 TPC-H tables now stored as <code>.duckdb</code> database file. Benefits: 10x faster cold-start queries, column pruning, predicate pushdown, and native DECIMAL support.</p>
+            <p><em>Scope: All tables, storage infrastructure</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>2024-06-20</strong> — Added partsupp table
+            <p>Introduced the <code>partsupp</code> bridge table with composite PK <code>(ps_partkey, ps_suppkey)</code>. Previously, part-supplier relationships were embedded as denormalized columns in lineitem. This normalization enables proper supply cost analysis and supplier diversity metrics.</p>
+            <p><em>Scope: New table, lineitem FK relationships updated</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>2024-06-01</strong> — Normalized nation/region from customer table
+            <p>Extracted <code>nation</code> and <code>region</code> into separate dimension tables. Customer and supplier tables now reference <code>n_nationkey</code> via foreign key instead of storing nation/region names as strings. Reduces storage and enables geographic hierarchy queries.</p>
+            <p><em>Scope: customer, supplier, nation (new), region (new)</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>2024-05-15</strong> — Initial TPC-H data generation (SF=0.01)
+            <p>Generated the initial TPC-H dataset at Scale Factor 0.01 using <code>dbgen</code>. Loaded all 8 tables: region, nation, supplier, customer, part, partsupp, orders, lineitem. Total ~60K line items, ~15K orders, suitable for development and testing.</p>
+            <p><em>Scope: Full schema, initial load</em></p>
+          </div>
+        </div>
+
+        <div class="status-card">
+          <span class="dot green"></span>
+          <div class="status-card-content">
+            <strong>2024-05-10</strong> — Wiki infrastructure created
+            <p>Set up the Lighthouse Wiki with catalog, metrics, pipelines, semantics, and status sections. Established the wiki.css design system and page templates for documenting the data platform.</p>
+            <p><em>Scope: Documentation infrastructure</em></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Change Format</h2>
+        <p>Entries follow the pattern: date, affected component, change type (added, modified, deprecated, removed), and a brief description of impact. Each entry includes a scope indicator showing which tables or systems were affected.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

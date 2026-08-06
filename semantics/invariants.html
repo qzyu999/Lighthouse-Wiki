@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invariants - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Semantics</div>
+      <a href="index.html" class="nav-item">Primitives</a>
+      <a href="types.html" class="nav-item">Type System</a>
+      <a href="invariants.html" class="nav-item active">Invariants</a>
+      <a href="graph.html" class="nav-item">Lineage Graph</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="semantics-invariants">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Semantics<span class="sep">/</span>Invariants
+      </div>
+      <div class="page-header">
+        <h1>Invariants</h1>
+        <p class="subtitle">Business rules that must hold for data to be correct.</p>
+      </div>
+      <div class="section">
+        <h2>What Are Invariants</h2>
+        <p>Invariants are conditions that must always be true for a dataset to be considered valid. They encode business logic as testable assertions.</p>
+      </div>
+      <div class="section">
+        <h2>Examples</h2>
+        <p>A customer_id must never be null. An order total must be non-negative. A created_at timestamp must not be in the future.</p>
+      </div>
+      <div class="section">
+        <h2>Enforcement</h2>
+        <p>Invariants are checked at write time in the silver layer and again as post-conditions after gold layer transformations complete.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

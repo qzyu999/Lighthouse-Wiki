@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Lake Wiki</title>
+  <link rel="stylesheet" href="wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="index.html" class="nav-item active">Home</a>
+      <a href="guides/getting-started.html" class="nav-item">Getting Started</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Platform</div>
+      <a href="architecture/overview.html" class="nav-item">Architecture</a>
+      <a href="architecture/medallion.html" class="nav-item">Medallion Layers</a>
+      <a href="architecture/infrastructure.html" class="nav-item">Infrastructure</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="catalog/index.html" class="nav-item">Catalog</a>
+      <a href="pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Semantics</div>
+      <a href="semantics/index.html" class="nav-item">Primitives</a>
+      <a href="semantics/types.html" class="nav-item">Type System</a>
+      <a href="semantics/invariants.html" class="nav-item">Invariants</a>
+      <a href="semantics/graph.html" class="nav-item">Lineage Graph</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <a href="status/changelog.html" class="nav-item">Changelog</a>
+      <a href="status/roadmap.html" class="nav-item">Roadmap</a>
+      <a href="status/issues.html" class="nav-item">Issues</a>
+      <a href="glossary/index.html" class="nav-item">Glossary</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="index">
+      <div class="page-header">
+        <h1>Data Lake Wiki</h1>
+        <p class="subtitle">Everything you need to understand, query, and build on the supply chain data platform.</p>
+      </div>
+
+      <div class="section">
+        <h2>Start here</h2>
+        <div class="card-grid">
+          <a href="guides/getting-started.html" class="card">
+            <h3>Getting Started</h3>
+            <p>Connect and run your first query in 5 minutes.</p>
+          </a>
+          <a href="catalog/index.html" class="card">
+            <h3>Data Catalog</h3>
+            <p>Browse all 8 TPC-H supply chain tables — from regions to line items.</p>
+          </a>
+          <a href="guides/query-patterns.html" class="card">
+            <h3>Query Patterns</h3>
+            <p>Copy-paste SQL templates for common tasks.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Understand the platform</h2>
+        <div class="card-grid">
+          <a href="architecture/overview.html" class="card">
+            <h3>Architecture</h3>
+            <p>How supply chain data flows through reference and core layers.</p>
+          </a>
+          <a href="semantics/index.html" class="card">
+            <h3>Semantics</h3>
+            <p>Formal primitives — entities, facts, dimensions, and relationships in the supply chain model.</p>
+          </a>
+          <a href="metrics/index.html" class="card">
+            <h3>Metrics</h3>
+            <p>Revenue KPIs derived from lineitem shipments using TPC-H formulas.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Stay current</h2>
+        <div class="card-grid">
+          <a href="status/changelog.html" class="card">
+            <h3>Changelog</h3>
+            <p>What shipped recently.</p>
+          </a>
+          <a href="status/issues.html" class="card">
+            <h3>Known Issues</h3>
+            <p>Active problems and workarounds.</p>
+          </a>
+          <a href="status/roadmap.html" class="card">
+            <h3>Roadmap</h3>
+            <p>What's planned next.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="wiki.js"></script>
+</body>
+</html>

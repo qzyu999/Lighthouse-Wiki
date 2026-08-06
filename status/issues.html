@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Known Issues — Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Operations</div>
+      <a href="changelog.html" class="nav-item">Changelog</a>
+      <a href="roadmap.html" class="nav-item">Roadmap</a>
+      <a href="issues.html" class="nav-item active">Issues</a>
+      <a href="migrations.html" class="nav-item">Migrations</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="status-issues">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Issues
+      </div>
+
+      <div class="page-header">
+        <a href="#" class="suggest-edit">Suggest edit</a>
+        <h1>Known Issues</h1>
+        <p class="subtitle">Active data quality problems, their impact, and workarounds.</p>
+      </div>
+
+      <div class="section" data-section="active" data-editable="true">
+        <h2>Active</h2>
+
+        <div class="status-card">
+          <p><span class="status-dot red"></span><strong>orders.total_amount includes tax</strong></p>
+          <p>Since the 2024-03-01 migration, <code>total_amount</code> includes sales tax. Previously it was subtotal only.</p>
+          <p><strong>Impact:</strong> Revenue calculations ~8% higher than historical comparisons.</p>
+          <p><strong>Workaround:</strong> Use <code>total_amount / 1.08</code> for approximate subtotal.</p>
+          <p><strong>Affected:</strong> <a href="../catalog/gold/orders.html">gold.orders</a>, <a href="../metrics/daily-revenue.html">daily_revenue</a></p>
+        </div>
+
+        <div class="status-card">
+          <p><span class="status-dot yellow"></span><strong>customer_email NULL for legacy records</strong></p>
+          <p>Records before 2022-01-01 have NULL <code>customer_email</code>.</p>
+          <p><strong>Workaround:</strong> Filter by <code>created_at >= '2022-01-01'</code> or use <code>COALESCE</code>.</p>
+        </div>
+      </div>
+
+      <div class="section" data-section="resolved" data-editable="true">
+        <h2>Resolved</h2>
+        <div class="status-card">
+          <p><span class="status-dot green"></span><strong>Duplicate orders in Silver layer</strong></p>
+          <p>Resolved 2024-06-15. Added dedup step on (order_id, event_timestamp).</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

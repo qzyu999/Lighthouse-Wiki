@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>lineitem — Data Catalog</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item">nation</a>
+      <a href="customer.html" class="nav-item">customer</a>
+      <a href="supplier.html" class="nav-item">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item">partsupp</a>
+      <a href="orders.html" class="nav-item">orders</a>
+      <a href="lineitem.html" class="nav-item active">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="entity" data-type="fact" data-name="lineitem" data-section="core" data-editable="true">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Catalog</a><span class="sep">/</span>lineitem
+      </div>
+
+      <div class="page-header">
+        <h1>lineitem</h1>
+        <p class="subtitle">Order line items — the largest fact table containing individual shipment records.</p>
+      </div>
+
+      <div class="meta-row" data-section="meta" data-editable="true">
+        <span class="meta-badge"><span class="label">Layer:</span> Core</span>
+        <span class="meta-badge"><span class="label">Type:</span> Fact</span>
+        <span class="meta-badge"><span class="label">Rows:</span> 60,000</span>
+        <span class="meta-badge"><span class="label">Related:</span> orders, part, supplier</span>
+      </div>
+
+      <div class="section" data-section="schema" data-editable="true">
+        <h2>Schema</h2>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>l_orderkey</code></td><td>INTEGER</td><td>FK → orders.o_orderkey (part of composite PK)</td></tr>
+            <tr><td><code>l_partkey</code></td><td>INTEGER</td><td>FK → part.p_partkey</td></tr>
+            <tr><td><code>l_suppkey</code></td><td>INTEGER</td><td>FK → supplier.s_suppkey</td></tr>
+            <tr><td><code>l_linenumber</code></td><td>INTEGER</td><td>Line number within the order (part of composite PK)</td></tr>
+            <tr><td><code>l_quantity</code></td><td>DECIMAL</td><td>Quantity ordered</td></tr>
+            <tr><td><code>l_extendedprice</code></td><td>DECIMAL</td><td>Extended price (quantity × retail price)</td></tr>
+            <tr><td><code>l_discount</code></td><td>DECIMAL</td><td>Discount percentage (0.00–0.10)</td></tr>
+            <tr><td><code>l_tax</code></td><td>DECIMAL</td><td>Tax rate (0.00–0.08)</td></tr>
+            <tr><td><code>l_returnflag</code></td><td>VARCHAR</td><td>Return status: A (accepted), R (returned), N (not yet shipped)</td></tr>
+            <tr><td><code>l_linestatus</code></td><td>VARCHAR</td><td>Line status: O (open), F (fulfilled)</td></tr>
+            <tr><td><code>l_shipdate</code></td><td>DATE</td><td>Actual ship date</td></tr>
+            <tr><td><code>l_commitdate</code></td><td>DATE</td><td>Committed delivery date</td></tr>
+            <tr><td><code>l_receiptdate</code></td><td>DATE</td><td>Actual receipt date</td></tr>
+            <tr><td><code>l_shipinstruct</code></td><td>VARCHAR</td><td>Shipping instructions (DELIVER IN PERSON, COLLECT COD, etc.)</td></tr>
+            <tr><td><code>l_shipmode</code></td><td>VARCHAR</td><td>Shipping mode: TRUCK, SHIP, AIR, MAIL, RAIL, REG AIR, FOB</td></tr>
+            <tr><td><code>l_comment</code></td><td>VARCHAR</td><td>Optional remarks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="business-rules" data-editable="true">
+        <h2>Business rules</h2>
+        <ul>
+          <li>Composite primary key: <code>(l_orderkey, l_linenumber)</code></li>
+          <li><code>l_orderkey</code> must reference a valid <code>orders.o_orderkey</code></li>
+          <li><code>l_partkey</code> must reference a valid <code>part.p_partkey</code></li>
+          <li><code>l_suppkey</code> must reference a valid <code>supplier.s_suppkey</code></li>
+          <li><code>(l_partkey, l_suppkey)</code> must exist in <code>partsupp</code></li>
+          <li><code>l_extendedprice</code> = <code>l_quantity</code> × part retail price</li>
+          <li><code>l_discount</code> between 0.00 and 0.10</li>
+          <li><code>l_tax</code> between 0.00 and 0.08</li>
+          <li>Revenue formula: <code>l_extendedprice * (1 - l_discount)</code></li>
+          <li><code>l_shipdate</code> ≤ <code>l_receiptdate</code></li>
+        </ul>
+      </div>
+
+      <div class="section" data-section="queries" data-editable="true">
+        <h2>Example queries</h2>
+
+        <h3>Daily revenue (TPC-H Q1 style)</h3>
+<pre><code>SELECT l_shipdate,
+       SUM(l_extendedprice * (1 - l_discount)) AS revenue,
+       SUM(l_quantity) AS total_qty
+FROM lineitem
+WHERE l_shipdate BETWEEN '1994-01-01' AND '1994-12-31'
+GROUP BY l_shipdate
+ORDER BY l_shipdate;</code></pre>
+
+        <h3>Revenue by ship mode</h3>
+<pre><code>SELECT l_shipmode,
+       COUNT(*) AS line_count,
+       SUM(l_extendedprice * (1 - l_discount)) AS revenue
+FROM lineitem
+WHERE l_shipdate >= '1995-01-01'
+GROUP BY l_shipmode
+ORDER BY revenue DESC;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

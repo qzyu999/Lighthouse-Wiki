@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Medallion Layers - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Platform</div>
+      <a href="overview.html" class="nav-item">Architecture Overview</a>
+      <a href="medallion.html" class="nav-item active">Medallion Layers</a>
+      <a href="infrastructure.html" class="nav-item">Infrastructure</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="architecture-medallion">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Platform<span class="sep">/</span>Medallion Layers
+      </div>
+      <div class="page-header">
+        <h1>Medallion Layers</h1>
+        <p class="subtitle">Bronze, Silver, Gold — progressive data refinement.</p>
+      </div>
+      <div class="section">
+        <h2>Bronze Layer</h2>
+        <p>Raw ingestion from source systems. Data is stored as-is with minimal transformation, preserving the original schema and fidelity.</p>
+      </div>
+      <div class="section">
+        <h2>Silver Layer</h2>
+        <p>Cleansed and conformed data. Deduplication, type casting, null handling, and schema enforcement are applied at this stage.</p>
+      </div>
+      <div class="section">
+        <h2>Gold Layer</h2>
+        <p>Business-ready tables optimized for consumption. Aggregations, joins, and dimensional modeling produce the final datasets used by analysts and dashboards.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

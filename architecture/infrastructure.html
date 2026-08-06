@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infrastructure - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Platform</div>
+      <a href="overview.html" class="nav-item">Architecture Overview</a>
+      <a href="medallion.html" class="nav-item">Medallion Layers</a>
+      <a href="infrastructure.html" class="nav-item active">Infrastructure</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="architecture-infrastructure">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Platform<span class="sep">/</span>Infrastructure
+      </div>
+      <div class="page-header">
+        <h1>Infrastructure</h1>
+        <p class="subtitle">Compute, storage, and orchestration.</p>
+      </div>
+      <div class="section">
+        <h2>Compute</h2>
+        <p>Processing workloads run on ephemeral clusters that scale based on job size and priority. Batch and streaming engines are supported.</p>
+      </div>
+      <div class="section">
+        <h2>Storage</h2>
+        <p>Object storage serves as the foundation for the lakehouse, with table formats providing ACID semantics and time-travel capabilities.</p>
+      </div>
+      <div class="section">
+        <h2>Orchestration</h2>
+        <p>A DAG-based scheduler coordinates pipeline execution, manages dependencies, handles retries, and provides observability into job status.</p>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

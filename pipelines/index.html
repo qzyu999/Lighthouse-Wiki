@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pipelines - Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css" />
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="../catalog/index.html" class="nav-item">Catalog</a>
+      <a href="index.html" class="nav-item active">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="pipelines-index">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Data<span class="sep">/</span>Pipelines
+      </div>
+      <div class="page-header">
+        <h1>Pipelines</h1>
+        <p class="subtitle">ETL jobs, schedules, and data flow.</p>
+      </div>
+
+      <div class="section">
+        <h2>Overview</h2>
+        <p>Pipelines move data between layers, apply transformations, and materialize output tables on a defined schedule. All pipelines read from the TPC-H source tables and produce aggregated or enriched outputs consumed by dashboards, metrics, and the Lighthouse LLM context layer.</p>
+      </div>
+
+      <div class="section">
+        <h2>Pipeline Registry</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Pipeline</th>
+              <th>Schedule</th>
+              <th>Input</th>
+              <th>Output</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="daily-revenue.html"><strong>daily-revenue</strong></a></td>
+              <td>Daily @ 02:00 UTC</td>
+              <td>lineitem, orders</td>
+              <td>daily_revenue_agg</td>
+              <td>Aggregates line-item revenue by date, segment, and region. Powers the revenue dashboard and trend metrics.</td>
+            </tr>
+            <tr>
+              <td><strong>customer-segmentation</strong></td>
+              <td>Daily @ 03:00 UTC</td>
+              <td>customer, orders</td>
+              <td>customer_segments</td>
+              <td>Assigns tier labels (high-value, medium, low) based on order frequency and total spend over a rolling 90-day window.</td>
+            </tr>
+            <tr>
+              <td><strong>supplier-performance</strong></td>
+              <td>Weekly (Monday 04:00 UTC)</td>
+              <td>lineitem, supplier, partsupp</td>
+              <td>supplier_scorecards</td>
+              <td>Computes on-time delivery rate, average discount given, and part diversity per supplier. Used for procurement risk analysis.</td>
+            </tr>
+            <tr>
+              <td><strong>order-fulfillment</strong></td>
+              <td>Hourly</td>
+              <td>orders</td>
+              <td>fulfillment_metrics</td>
+              <td>Calculates real-time fill rate, average time-to-ship, and open order counts. Feeds operational alerting.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Pipeline Architecture</h2>
+        <p>All pipelines follow a consistent pattern:</p>
+        <ol>
+          <li><strong>Extract</strong> — Read from DuckDB source tables (TPC-H schema)</li>
+          <li><strong>Transform</strong> — Apply SQL-based aggregation and business logic</li>
+          <li><strong>Load</strong> — Write results to materialized output tables</li>
+          <li><strong>Notify</strong> — Update the wiki metadata and trigger downstream consumers</li>
+        </ol>
+        <p>Pipelines are idempotent: re-running a pipeline for the same date window overwrites (not appends) the output partition. This ensures consistency after retries or backfills.</p>
+      </div>
+
+      <div class="section">
+        <h2>Monitoring &amp; SLAs</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Pipeline</th>
+              <th>Max Runtime</th>
+              <th>SLA</th>
+              <th>Alert Channel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>daily-revenue</td>
+              <td>5 min</td>
+              <td>Complete by 02:30 UTC</td>
+              <td>#data-alerts</td>
+            </tr>
+            <tr>
+              <td>customer-segmentation</td>
+              <td>10 min</td>
+              <td>Complete by 03:30 UTC</td>
+              <td>#data-alerts</td>
+            </tr>
+            <tr>
+              <td>supplier-performance</td>
+              <td>15 min</td>
+              <td>Complete by Monday 05:00 UTC</td>
+              <td>#procurement-alerts</td>
+            </tr>
+            <tr>
+              <td>order-fulfillment</td>
+              <td>2 min</td>
+              <td>Complete within 5 min of trigger</td>
+              <td>#ops-alerts</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
+

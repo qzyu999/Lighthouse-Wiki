@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nation — Data Catalog</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item active">nation</a>
+      <a href="customer.html" class="nav-item">customer</a>
+      <a href="supplier.html" class="nav-item">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item">partsupp</a>
+      <a href="orders.html" class="nav-item">orders</a>
+      <a href="lineitem.html" class="nav-item">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="entity" data-type="dimension" data-name="nation" data-section="reference" data-editable="true">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Catalog</a><span class="sep">/</span>nation
+      </div>
+
+      <div class="page-header">
+        <h1>nation</h1>
+        <p class="subtitle">Country-level geographic dimension linking customers and suppliers to regions.</p>
+      </div>
+
+      <div class="meta-row" data-section="meta" data-editable="true">
+        <span class="meta-badge"><span class="label">Layer:</span> Reference</span>
+        <span class="meta-badge"><span class="label">Type:</span> Dimension</span>
+        <span class="meta-badge"><span class="label">Rows:</span> 13</span>
+        <span class="meta-badge"><span class="label">Related:</span> region, customer, supplier</span>
+      </div>
+
+      <div class="section" data-section="schema" data-editable="true">
+        <h2>Schema</h2>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>n_nationkey</code></td><td>INTEGER</td><td>Primary key — unique nation identifier</td></tr>
+            <tr><td><code>n_name</code></td><td>VARCHAR</td><td>Country name</td></tr>
+            <tr><td><code>n_regionkey</code></td><td>INTEGER</td><td>FK → region.r_regionkey</td></tr>
+            <tr><td><code>n_comment</code></td><td>VARCHAR</td><td>Optional remarks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="business-rules" data-editable="true">
+        <h2>Business rules</h2>
+        <ul>
+          <li><code>n_nationkey</code> is the primary key (unique, not null)</li>
+          <li><code>n_regionkey</code> must reference a valid <code>region.r_regionkey</code></li>
+          <li>Referenced by <code>customer.c_nationkey</code> and <code>supplier.s_nationkey</code></li>
+          <li>Static reference data — 13 predefined countries</li>
+        </ul>
+      </div>
+
+      <div class="section" data-section="queries" data-editable="true">
+        <h2>Example queries</h2>
+
+        <h3>Nations with their region</h3>
+<pre><code>SELECT n.n_name AS nation, r.r_name AS region
+FROM nation n
+JOIN region r ON r.r_regionkey = n.n_regionkey
+ORDER BY r.r_name, n.n_name;</code></pre>
+
+        <h3>Customer count by nation</h3>
+<pre><code>SELECT n.n_name, COUNT(*) AS customer_count
+FROM nation n
+JOIN customer c ON c.c_nationkey = n.n_nationkey
+GROUP BY n.n_name
+ORDER BY customer_count DESC;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Semantics — Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Semantics</div>
+      <a href="index.html" class="nav-item active">Primitives</a>
+      <a href="types.html" class="nav-item">Type System</a>
+      <a href="invariants.html" class="nav-item">Invariants</a>
+      <a href="graph.html" class="nav-item">Lineage Graph</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Related</div>
+      <a href="../catalog/index.html" class="nav-item">Catalog</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="semantics-index">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Semantics
+      </div>
+
+      <div class="page-header">
+        <h1>Data Semantics</h1>
+        <p class="subtitle">What the data means — not just what it looks like. Typed primitives, invariants, and relationships for the TPC-H supply chain model.</p>
+      </div>
+
+      <div class="section" data-section="why">
+        <h2>Why this matters</h2>
+        <p>A data catalog tells you what exists (tables, columns, types). Semantics tells you what it <em>means</em>:</p>
+        <ul>
+          <li><strong>Types</strong> — Is this an Entity, Fact, Dimension, or Relationship?</li>
+          <li><strong>Invariants</strong> — What constraints must hold for the data to be correct?</li>
+          <li><strong>Morphisms</strong> — How do transforms change structure? What's preserved?</li>
+          <li><strong>Relationships</strong> — Not just foreign keys — enrichments, aggregations, refinements.</li>
+        </ul>
+        <p>This layer lets AI assistants reason about your data, not just list columns.</p>
+      </div>
+
+      <div class="section" data-section="types-overview">
+        <h2>Primitive types</h2>
+        <table>
+          <thead>
+            <tr><th>Type</th><th>Definition</th><th>TPC-H Examples</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Entity</strong></td><td>Uniquely-identifiable thing with a lifecycle</td><td>customer, supplier, part</td></tr>
+            <tr><td><strong>Fact</strong></td><td>Transactional record capturing a measurable event</td><td>lineitem</td></tr>
+            <tr><td><strong>Dimension</strong></td><td>Slowly-changing descriptor used for grouping/filtering</td><td>region, nation</td></tr>
+            <tr><td><strong>Relationship</strong></td><td>Many-to-many association between entities</td><td>partsupp, orders</td></tr>
+            <tr><td><strong>Aggregation</strong></td><td>Fold over a collection (SUM, COUNT, etc.)</td><td>daily_revenue</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="relationships">
+        <h2>Relationships</h2>
+        <table>
+          <thead>
+            <tr><th>Source</th><th>Target</th><th>Type</th><th>Key</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>customer</td><td>nation</td><td>FK</td><td>c_nationkey → n_nationkey</td></tr>
+            <tr><td>supplier</td><td>nation</td><td>FK</td><td>s_nationkey → n_nationkey</td></tr>
+            <tr><td>nation</td><td>region</td><td>FK</td><td>n_regionkey → r_regionkey</td></tr>
+            <tr><td>orders</td><td>customer</td><td>FK</td><td>o_custkey → c_custkey</td></tr>
+            <tr><td>lineitem</td><td>orders</td><td>FK</td><td>l_orderkey → o_orderkey</td></tr>
+            <tr><td>lineitem</td><td>part</td><td>FK</td><td>l_partkey → p_partkey</td></tr>
+            <tr><td>lineitem</td><td>supplier</td><td>FK</td><td>l_suppkey → s_suppkey</td></tr>
+            <tr><td>partsupp</td><td>part + supplier</td><td>Composite FK</td><td>(ps_partkey, ps_suppkey) → (p_partkey, s_suppkey)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Explore</h2>
+        <div class="card-grid">
+          <a href="types.html" class="card">
+            <h3>Type System</h3>
+            <p>Formal definitions and rules for each type.</p>
+          </a>
+          <a href="invariants.html" class="card">
+            <h3>Invariants</h3>
+            <p>Business rules and constraints across entities.</p>
+          </a>
+          <a href="graph.html" class="card">
+            <h3>Lineage Graph</h3>
+            <p>Interactive visualization of the transform graph.</p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>

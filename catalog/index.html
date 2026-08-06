@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Catalog — Lighthouse Wiki</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item active">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item">nation</a>
+      <a href="customer.html" class="nav-item">customer</a>
+      <a href="supplier.html" class="nav-item">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item">partsupp</a>
+      <a href="orders.html" class="nav-item">orders</a>
+      <a href="lineitem.html" class="nav-item">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="catalog-index">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span>Catalog
+      </div>
+
+      <div class="page-header">
+        <h1>Data Catalog</h1>
+        <p class="subtitle">All tables in the TPC-H supply chain dataset — reference dimensions, core entities, and fact tables.</p>
+      </div>
+
+      <div class="section" data-section="catalog-table" data-editable="true">
+        <div class="filter-bar">
+          <input type="text" placeholder="Filter by name..." data-col="0">
+          <select data-col="1">
+            <option value="">All layers</option>
+            <option value="Reference">Reference</option>
+            <option value="Core">Core</option>
+          </select>
+          <select data-col="2">
+            <option value="">All types</option>
+            <option value="Dimension">Dimension</option>
+            <option value="Entity">Entity</option>
+            <option value="Relationship">Relationship</option>
+            <option value="Fact">Fact</option>
+          </select>
+        </div>
+        <table id="catalog-table">
+          <thead>
+            <tr><th>Name</th><th>Layer</th><th>Type</th><th>Rows</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><a href="region.html">region</a></td><td>Reference</td><td>Dimension</td><td>5</td><td>Continents</td></tr>
+            <tr><td><a href="nation.html">nation</a></td><td>Reference</td><td>Dimension</td><td>13</td><td>Countries with region FK</td></tr>
+            <tr><td><a href="customer.html">customer</a></td><td>Core</td><td>Entity</td><td>1,500</td><td>Buyers/accounts</td></tr>
+            <tr><td><a href="supplier.html">supplier</a></td><td>Core</td><td>Entity</td><td>100</td><td>Parts suppliers</td></tr>
+            <tr><td><a href="part.html">part</a></td><td>Core</td><td>Entity</td><td>2,000</td><td>Product catalog</td></tr>
+            <tr><td><a href="partsupp.html">partsupp</a></td><td>Core</td><td>Relationship</td><td>8,000</td><td>Supplier-part pricing</td></tr>
+            <tr><td><a href="orders.html">orders</a></td><td>Core</td><td>Entity</td><td>15,000</td><td>Purchase orders</td></tr>
+            <tr><td><a href="lineitem.html">lineitem</a></td><td>Core</td><td>Fact</td><td>60,000</td><td>Order line items (largest table)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+<script>initFilterableTable("catalog-table");</script>
+</body>
+</html>

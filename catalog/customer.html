@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>customer — Data Catalog</title>
+  <link rel="stylesheet" href="../wiki.css">
+</head>
+<body>
+<div class="wiki-shell">
+  <nav class="wiki-sidebar">
+    <div class="sidebar-brand"><a href="../index.html">Lighthouse Wiki</a></div>
+
+    <div class="nav-section">
+      <a href="../index.html" class="nav-item">Home</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Data</div>
+      <a href="index.html" class="nav-item">Catalog</a>
+      <a href="../pipelines/index.html" class="nav-item">Pipelines</a>
+      <a href="../metrics/index.html" class="nav-item">Metrics</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-label">Catalog</div>
+      <a href="region.html" class="nav-item">region</a>
+      <a href="nation.html" class="nav-item">nation</a>
+      <a href="customer.html" class="nav-item active">customer</a>
+      <a href="supplier.html" class="nav-item">supplier</a>
+      <a href="part.html" class="nav-item">part</a>
+      <a href="partsupp.html" class="nav-item">partsupp</a>
+      <a href="orders.html" class="nav-item">orders</a>
+      <a href="lineitem.html" class="nav-item">lineitem</a>
+    </div>
+  </nav>
+
+  <main class="wiki-content">
+    <div class="page" data-wiki-page="entity" data-type="entity" data-name="customer" data-section="core" data-editable="true">
+      <div class="breadcrumbs">
+        <a href="../index.html">Home</a><span class="sep">/</span><a href="index.html">Catalog</a><span class="sep">/</span>customer
+      </div>
+
+      <div class="page-header">
+        <h1>customer</h1>
+        <p class="subtitle">Buyer accounts that place orders in the supply chain.</p>
+      </div>
+
+      <div class="meta-row" data-section="meta" data-editable="true">
+        <span class="meta-badge"><span class="label">Layer:</span> Core</span>
+        <span class="meta-badge"><span class="label">Type:</span> Entity</span>
+        <span class="meta-badge"><span class="label">Rows:</span> 1,500</span>
+        <span class="meta-badge"><span class="label">Related:</span> nation, orders</span>
+      </div>
+
+      <div class="section" data-section="schema" data-editable="true">
+        <h2>Schema</h2>
+        <table>
+          <thead>
+            <tr><th>Column</th><th>Type</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>c_custkey</code></td><td>INTEGER</td><td>Primary key — unique customer identifier</td></tr>
+            <tr><td><code>c_name</code></td><td>VARCHAR</td><td>Customer name</td></tr>
+            <tr><td><code>c_address</code></td><td>VARCHAR</td><td>Street address</td></tr>
+            <tr><td><code>c_nationkey</code></td><td>INTEGER</td><td>FK → nation.n_nationkey</td></tr>
+            <tr><td><code>c_phone</code></td><td>VARCHAR</td><td>Phone number</td></tr>
+            <tr><td><code>c_acctbal</code></td><td>DECIMAL</td><td>Account balance</td></tr>
+            <tr><td><code>c_mktsegment</code></td><td>VARCHAR</td><td>Market segment (AUTOMOBILE, BUILDING, FURNITURE, HOUSEHOLD, MACHINERY)</td></tr>
+            <tr><td><code>c_comment</code></td><td>VARCHAR</td><td>Optional remarks</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section" data-section="business-rules" data-editable="true">
+        <h2>Business rules</h2>
+        <ul>
+          <li><code>c_custkey</code> is the primary key (unique, not null)</li>
+          <li><code>c_nationkey</code> must reference a valid <code>nation.n_nationkey</code></li>
+          <li><code>c_mktsegment</code> is one of: AUTOMOBILE, BUILDING, FURNITURE, HOUSEHOLD, MACHINERY</li>
+          <li>Referenced by <code>orders.o_custkey</code></li>
+          <li><code>c_acctbal</code> can be negative (credit customers)</li>
+        </ul>
+      </div>
+
+      <div class="section" data-section="queries" data-editable="true">
+        <h2>Example queries</h2>
+
+        <h3>Top customers by account balance</h3>
+<pre><code>SELECT c_custkey, c_name, c_acctbal, c_mktsegment
+FROM customer
+ORDER BY c_acctbal DESC
+LIMIT 10;</code></pre>
+
+        <h3>Customers by market segment</h3>
+<pre><code>SELECT c_mktsegment, COUNT(*) AS cnt, AVG(c_acctbal) AS avg_balance
+FROM customer
+GROUP BY c_mktsegment
+ORDER BY cnt DESC;</code></pre>
+      </div>
+    </div>
+  </main>
+</div>
+<script src="../wiki.js"></script>
+</body>
+</html>
